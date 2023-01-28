@@ -6,7 +6,7 @@ const emit = defineEmits<{
 }>();
 var base_url =
   import.meta.env.MODE === "development"
-    ? new URL("/example/", location.href)
+    ? new URL("./example/", location.href)
     : new URL("./", location.href);
 
 var iframe = ref<HTMLIFrameElement>();
