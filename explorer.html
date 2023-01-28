@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  * {
+    margin: 0;
+  }
+
+  .d-none {
+    display: none;
+  }
+</style>
+<style>
+  .btn {
+    cursor: pointer;
+    user-select: none;
+    margin: 5px;
+    background: darkturquoise;
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
+    color: white;
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 40px;
+    padding-top: 20px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .action-btn {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+  }
+
+  .fullscreen-btn {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    line-height: 0;
+    padding: 10px;
+    border-radius: 100%;
+    background: #00000010;
+  }
+</style>
+<style>
+  .file-manager {
+    position: fixed;
+    width: 40%;
+    top: 0;
+    bottom: 0;
+    transition: width ease-in-out 0.3s;
+    overflow: hidden;
+    background-color: white;
+  }
+
+  .file-manager.closed {
+    width: 0%;
+  }
+
+  .file-manager.closed+.container {
+    width: 100%;
+  }
+
+  .container {
+    margin-left: auto;
+    width: 60%;
+
+    --width: 0.6;
+    overflow: auto;
+  }
+
+  .container div {
+    display: flex;
+    justify-content: center;
+    width: calc(100% * var(--width));
+    margin: 0 auto;
+    /* box-shadow: inset red 0 0 0 1px;
+    background: linear-gradient(to right, #ffffff00 50%, #000 50%, #000 calc(50% + 1px), #ffffff00 calc(50% + 1px)),
+      linear-gradient(#ffffff00 50%, #000 50%, #000 calc(50% + 1px), #ffffff00 calc(50% + 1px)); */
+  }
+
+  img {
+    width: 100%;
+    /* opacity: 0;
+    margin: 1px; */
+  }
+
+  img {
+    margin: 0;
+    /* border: solid 1px #cfcfcf; */
+    /* margin-bottom: 10px; */
+    /* box-shadow: rgb(0 0 0 / 9%) 4px 3px 10px 0px; */
+  }
+</style>
+
+<body>
+  <div style="display: flex;">
+    <div class="file-manager">
+      <iframe src="about:blank" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+    </div>
+    <div class="container">
+    </div>
+  </div>
+
+  <div class="action-btn">
+    <div class="btn btn-load d-none">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+        <path
+          d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z">
+        </path>
+      </svg>
+    </div>
+    <div class="btn btn-folder">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+        <path
+          d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z">
+        </path>
+      </svg>
+    </div>
+  </div>
+  <div class="fullscreen-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-fullscreen"
+      viewBox="0 0 16 16">
+      <path fill-rule="evenodd"
+        d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707zm0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707z">
+      </path>
+    </svg>
+  </div>
+
+  <!-- scale Event -->
+  <script>
+    function getBaseLog(x, y) {
+      return Math.log(y) / Math.log(x);
+    }
+  </script>
+  <script>
+    (function () {
+      var container = document.querySelector('.container');
+
+      var scaling = false;
+      var dist = null;
+      var movement = 0;
+
+      function triggerEvent(delta) {
+        var event = new Event("scale");
+        event.delta = delta;
+        container.dispatchEvent(event)
+      }
+
+      container.addEventListener("wheel", e => {
+        if (!e.ctrlKey) return;
+        e.preventDefault();
+        triggerEvent(-e.deltaY)
+      }, { passive: false })
+
+      container.addEventListener("touchstart", e => {
+        const { touches } = e
+        if (touches.length === 2) {
+          scaling = true;
+          e.preventDefault()
+        }
+      }, { passive: false })
+
+      window.addEventListener("touchend", e => {
+        scaling = false;
+        dist = null;
+        movement = 0;
+      })
+      window.addEventListener("touchmove", e => {
+        if (!scaling) return;
+        var prev = dist;
+        dist = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY);
+        movement = prev === null ? 0 : dist - prev;
+        triggerEvent(movement)
+      })
+    })();
+  </script>
+
+  <!-- container -->
+  <script>
+    (function () {
+      var scale = 1;
+      var container = document.querySelector('.container');
+
+      // window.onbeforeunload = function confirmExit() { return " " };
+      var fullscreen_btn = document.querySelector(".fullscreen-btn");
+      var fullscreen = false;
+      window.addEventListener("resize", () => {
+        fullscreen = screen.width === innerWidth && screen.height === innerHeight;
+        if (fullscreen) fullscreen_btn.classList.add("d-none");
+        else fullscreen_btn.classList.remove("d-none");
+      })
+
+      fullscreen_btn.addEventListener("click", () => {
+        document.documentElement.requestFullscreen();
+      })
+
+      container.addEventListener("click", e => {
+        toggle_file_manager()
+      })
+      container.addEventListener("scale", e => {
+        adjust(e.delta)
+      })
+
+      function adjust(delta) {
+        var y = (document.documentElement.scrollTop + document.documentElement.clientHeight / 2) / scale;
+        var x = (container.scrollLeft + container.clientWidth / 2) / scale;
+
+        var a = getBaseLog(1.2, scale);
+        scale = 1.2 ** (a + delta / 100);
+
+        if (scale < 10 / 60) scale = 10 / 60;
+
+        container.style.setProperty("--width", `calc(0.6 * ${scale})`)
+        document.documentElement.scrollTop = y * scale - document.documentElement.clientHeight / 2;
+        container.scrollLeft = x * scale - container.clientWidth / 2;
+      }
+    })();
+  </script>
+
+  <!-- file-manager -->
+  <script>
+    (function () {
+      var file_manager = document.querySelector(".file-manager");
+      var container = document.querySelector(".container");
+      var btn_folder = document.querySelector(".btn-folder");
+      var btn_load = document.querySelector(".btn-load");
+
+      function close_file_manager() {
+        var a = document.documentElement.scrollTop * (100 / 60);
+        file_manager.classList.add("closed");
+        // btn_load.classList.add("d-none");
+
+        document.documentElement.scrollTop = a;
+
+        // container.scrollLeft *= 100 / 60;
+      }
+      function open_file_manager() {
+        var a = document.documentElement.scrollTop * (60 / 100);
+        file_manager.classList.remove("closed");
+        // btn_load.classList.remove("d-none");
+
+        document.documentElement.scrollTop = a;
+        // container.scrollLeft *= 60 / 100;
+      }
+      function toggle_file_manager() {
+        file_manager.classList.contains("closed") ? open_file_manager() : close_file_manager();
+      }
+
+      btn_folder.addEventListener("click", toggle_file_manager)
+
+      window.close_file_manager = close_file_manager;
+      window.open_file_manager = open_file_manager;
+      window.toggle_file_manager = toggle_file_manager;
+    })();
+  </script>
+
+  <!-- load_image -->
+  <script>
+    (function () {
+      var btn = document.querySelector(".btn-load");
+      var container = document.querySelector('.container');
+
+      function load_image() {
+        var iframe = document.querySelector('iframe');
+        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        var images = [...iframeDoc.querySelectorAll("a")]
+          .map(ele => new URL(ele.attributes.href.value, base_url))
+          .filter(link => /(jpg$|png$)/i.test(link));
+
+        document.documentElement.scrollTop = 0;
+        container.innerHTML = "";
+        insert_images(images);
+      }
+
+      // function insert_images(images) {
+      //   var pack = images
+      //     .splice(0, 10)
+      //     .flatMap(src => {
+      //       var img = new Image();
+      //       img.loading = "lazy";
+      //       img.src = src;
+      //       return [img, document.createElement("br")];
+      //     });
+      //   (pack[10] || {}).onload = () => insert_images(images);
+      //   const fragment = document.createDocumentFragment();
+      //   fragment.replaceChildren(...pack);
+      //   container.appendChild(fragment);
+      // }
+      function insert_images(images) {
+        var pack = images
+          .flatMap(src => {
+            var div = document.createElement("div");
+            var img = new Image();
+            img.loading = "lazy";
+            img.src = src;
+            img.onload = () => div.style.paddingTop = "0%";
+            div.style.paddingTop = "calc(75% * var(--width))";
+            div.appendChild(img);
+
+            return div;
+          });
+        const fragment = document.createDocumentFragment();
+        fragment.replaceChildren(...pack);
+        container.appendChild(fragment);
+      }
+
+      btn.addEventListener("click", () => {
+        // document.documentElement.requestFullscreen();
+        // close_file_manager();
+        load_image();
+      })
+      window.load_image = load_image;
+    })();
+  </script>
+
+  <!-- onload -->
+  <script>
+    (function () {
+      var iframe = document.querySelector("iframe");
+      iframe.addEventListener("load", () => {
+        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        iframeDoc.addEventListener("click", e => {
+          e.preventDefault();
+          var a = e.target.closest('a')
+          if (!/[/]$/.test(a.href)) return;
+
+          base_url = new URL(a.attributes.href.value, base_url);
+          load_page(base_url);
+        });
+        load_image();
+      })
+    })();
+  </script>
+
+  <!-- load_page -->
+  <script>
+    var load_page = (src) => {
+      fetch(src).then(resp => {
+        return resp.text();
+      }).then(html => {
+        var iframe = document.querySelector('iframe');
+        iframe.srcdoc = html
+          .replace("filterEl.focus();", "")
+          .replace("font-size: 14px;", "font-size: 18px;")
+          .replace("<style>", "<style>a{white-space:nowrap;}")
+      })
+    }
+
+    var base_url = new URL("./", location.href)
+    load_page(base_url)
+  </script>
+</body>
+
+</html>
