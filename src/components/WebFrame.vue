@@ -4,14 +4,15 @@ import { ref, onMounted, watch } from "vue";
 const emit = defineEmits<{
   (e: "insert_images", images: Array<URL>): void;
 }>();
-var base_url = import.meta.env.DEV
-  ? new URL("/example/", location.href)
-  : new URL("./", location.href);
+var base_url =
+  import.meta.env.MODE === "development"
+    ? new URL("/example/", location.href)
+    : new URL("./", location.href);
 
 var iframe = ref<HTMLIFrameElement>();
 
 var load_page = (src: URL) => {
-  import.meta.env.DEV && (src.href += "index.html");
+  import.meta.env.MODE === "development" && (src.href += "index.html");
 
   fetch(src)
     .then((resp) => {
