@@ -1,1 +1,1 @@
-# image-explorer
+# Image Explorer
