@@ -2,6 +2,8 @@
 
 基於Server Directory Listing功能製作的圖片瀏覽器
 
+搭配[RCX - Rclone for Android](https://play.google.com/store/apps/details?id=io.github.x0b.rcx&hl=zh_TW&gl=US)使用
+
 # Try it out!
 
 Go to https://k8188219.github.io/image-explorer/
