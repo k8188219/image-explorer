@@ -32,6 +32,7 @@ var load_page = (src: URL) => {
       iframe.contentWindow?.location.reload();
       await new Promise((resolve) => (iframe.onload = resolve));
       iframe.contentDocument?.body.append(content);
+      load_image();
     });
 };
 
@@ -52,9 +53,9 @@ onMounted(() => {
   load_page(base_url);
 });
 
-watch(iframeRef, (iframe) => {
+watch(iframeRef, (iframe, _, onCleanup) => {
   if (!iframe) return;
-  iframe.addEventListener("load", () => {
+  const handler = () => {
     const iframeDoc = iframe.contentDocument as Document;
     iframeDoc.addEventListener("click", (e: MouseEvent) => {
       e.preventDefault();
@@ -73,7 +74,11 @@ watch(iframeRef, (iframe) => {
       base_url = new URL(href, base_url);
       load_page(base_url);
     });
-    load_image();
+  };
+  iframe.addEventListener("load", handler);
+
+  onCleanup(() => {
+    iframe.removeEventListener("load", handler);
   });
 });
 </script>
