@@ -9,27 +9,36 @@ var base_url =
     ? new URL("./example/", location.href)
     : new URL("./", location.href);
 
-var iframe = ref<HTMLIFrameElement>();
+var iframeRef = ref<HTMLIFrameElement>();
 
 var load_page = (src: URL) => {
   import.meta.env.MODE === "development" && (src.href += "index.html");
+  const iframe = iframeRef.value;
+  if (!iframe) return;
 
   fetch(src)
-    .then((resp) => {
-      return resp.text();
-    })
-    .then((html) => {
-      if (!iframe.value) return;
-      iframe.value.srcdoc = html
-        .replace("filterEl.focus();", "")
+    .then((resp) => resp.text())
+    .then((html) =>
+      html
         .replace("font-size: 14px;", "font-size: 18px;")
-        .replace("<style>", "<style>a{white-space:nowrap;}");
+        .replace("<style>", "<style>a{white-space:nowrap;}")
+    )
+    .then((html) => {
+      const t = document.createElement("template");
+      t.innerHTML = html;
+      return t.content;
+    })
+    .then(async (content) => {
+      iframe.contentWindow?.location.reload();
+      await new Promise((resolve) => (iframe.onload = resolve));
+      iframe.contentDocument?.body.append(content);
     });
 };
 
 function load_image() {
-  if (!iframe.value) return;
-  const iframeDoc = iframe.value.contentDocument as Document;
+  const iframe = iframeRef.value;
+  if (!iframe) return;
+  const iframeDoc = iframe.contentDocument as Document;
   var images = [...iframeDoc.querySelectorAll("a")]
     .map((ele) => new URL(ele.getAttribute("href") + "", base_url))
     .filter((link) =>
@@ -43,7 +52,7 @@ onMounted(() => {
   load_page(base_url);
 });
 
-watch(iframe, (iframe) => {
+watch(iframeRef, (iframe) => {
   if (!iframe) return;
   iframe.addEventListener("load", () => {
     const iframeDoc = iframe.contentDocument as Document;
@@ -71,7 +80,7 @@ watch(iframe, (iframe) => {
 
 <template>
   <iframe
-    ref="iframe"
+    :ref="(el) => (iframeRef = el as HTMLIFrameElement)"
     src="about:blank"
     frameborder="0"
     style="width: 100%; height: 100%"
