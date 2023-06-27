@@ -44,7 +44,7 @@ watch(
     };
     const touch_move = (e: Event) => {
       if (!(e instanceof TouchEvent)) return;
-      if (!(e.touches.length > 2)) return;
+      if (!(e.touches.length >= 2)) return;
       var prev = dist;
       dist = Math.hypot(
         e.touches[0].pageX - e.touches[1].pageX,

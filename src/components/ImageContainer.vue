@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from "vue";
-import { ref, watchEffect, watch } from "vue";
+import { ref, watchEffect, watch, nextTick } from "vue";
 
 const props = defineProps({
   images: {
@@ -15,19 +15,19 @@ const props = defineProps({
 
 const container = ref<Element>();
 const width = ref(0.6);
-const image_list = ref<{ src: string; paddingTop: string }[]>([]);
+const image_list = ref<{ src: string; loaded: boolean }[]>([]);
 // window.onbeforeunload = function confirmExit() { return " " };
 
 watchEffect(() => {
   image_list.value = props.images.map((src) => {
-    var img = { src: `${src}`, paddingTop: "calc(75% * var(--width))" };
+    var img = { src: `${src}`, loaded: false };
     return img;
   });
 });
 
 watch(
   () => props.scale,
-  (scale, prevScale) => {
+  async (scale, prevScale) => {
     if (!container.value) return;
     const documentElement = document.documentElement;
     var y =
@@ -37,6 +37,7 @@ watch(
       (container.value.scrollLeft + container.value.clientWidth / 2) /
       prevScale;
     width.value = 0.6 * scale;
+    await nextTick();
     documentElement.scrollTop = y * scale - documentElement.clientHeight / 2;
     container.value.scrollLeft = x * scale - container.value.clientWidth / 2;
   }
@@ -53,13 +54,14 @@ defineExpose({ el: container });
       class="my-0 mx-auto flex justify-center"
       :style="{
         width: 'calc(100% * var(--width))',
-        paddingTop: image.paddingTop,
+        paddingTop: image.loaded ? '' : 'calc(75% * var(--width))',
       }"
     >
       <img
         :src="image.src"
         class="w-full"
-        @load="image.paddingTop = ''"
+        :style="{ height: image.loaded ? '' : '0px' }"
+        @load="image.loaded = true"
         loading="lazy"
       />
     </div>
